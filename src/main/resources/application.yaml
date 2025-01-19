@@ -1,7 +1,8 @@
 server:
-port: 8087
-servlet:
-context-path: '/Culinary-authuser/'
+  port: 8087
+  servlet:
+    context-path: '/Culinary-authuser/'
+
 spring:
   application:
     name: Culinary-authuser-service
@@ -17,4 +18,4 @@ spring:
         lob.non-contextual-creation: true
     properties:
       hibernate:
-show_sql: true
+        show_sql: true
