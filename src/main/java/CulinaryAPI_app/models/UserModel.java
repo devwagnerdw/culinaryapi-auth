@@ -21,7 +21,7 @@ public class UserModel  extends RepresentationModel<UserModel> implements Serial
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private UUID id;
+    private UUID userId;
 
     @Column(nullable = false , unique = true ,length = 20)
     private String username;
@@ -43,6 +43,14 @@ public class UserModel  extends RepresentationModel<UserModel> implements Serial
     @Column(length = 20)
     private String phoneNumber;
 
+    public UUID getUserId() {
+        return userId;
+    }
+
+    public void setUserId(UUID userId) {
+        this.userId = userId;
+    }
+
     @Column(length = 20)
     private String cpf;
 
@@ -57,13 +65,6 @@ public class UserModel  extends RepresentationModel<UserModel> implements Serial
     @JsonFormat(shape = JsonFormat.Shape.STRING,pattern = "yyyy-MM-dd'T'HH:mm:ss'Z'")
     private LocalDateTime lastUpdateDate;
 
-    public UUID getId() {
-        return id;
-    }
-
-    public void setId(UUID id) {
-        this.id = id;
-    }
 
     public String getUsername() {
         return username;

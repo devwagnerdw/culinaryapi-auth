@@ -38,7 +38,6 @@ public class AuthenticationController {
         if(userService.existsByEmail(userDto.getEmail())){
             return ResponseEntity.status(HttpStatus.CONFLICT).body("Error: Email is Already Taken!");
         }
-        userDto.setPassword(userDto.getPassword());
         var userModel = new UserModel();
         BeanUtils.copyProperties(userDto, userModel);
         userModel.setUserStatus(UserStatus.ACTIVE);
