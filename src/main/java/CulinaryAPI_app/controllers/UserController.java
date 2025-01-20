@@ -85,7 +85,7 @@ public class UserController {
                                                  @JsonView(UserDto.UserView.PasswordPut.class) UserDto userDto) {
 
         Optional<UserModel> userModelOptional = userService.findById(userId);
-        if (!userModelOptional.isPresent()) {
+        if (userModelOptional.isEmpty()) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User not found");
         }
         if (!userModelOptional.get().getPassword().equals(userDto.getOldPassword())) {
@@ -106,7 +106,7 @@ public class UserController {
                                               @JsonView(UserDto.UserView.ImagePut.class) UserDto userDto){
 
         Optional<UserModel> userModelOptional= userService.findById(userId);
-        if (!userModelOptional.isPresent()){
+        if (userModelOptional.isEmpty()){
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User not found");
         }else {
            var userModel= userModelOptional.get();
