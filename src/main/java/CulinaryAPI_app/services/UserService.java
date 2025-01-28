@@ -13,7 +13,7 @@ public interface UserService {
 
     boolean existsByEmail(String email);
 
-    UserModel saveUser(UserModel userModel);
+    UserModel save(UserModel userModel);
 
     Page<UserModel> findAll(Pageable pageable);
 
@@ -26,4 +26,7 @@ public interface UserService {
     void updatePassword(UserModel userModel);
 
     void updateImage(UserModel userModel);
+
+    UserModel saveUser(UserModel userModel);
+
 }

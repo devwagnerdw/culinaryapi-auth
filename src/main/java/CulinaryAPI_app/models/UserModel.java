@@ -1,11 +1,13 @@
 package CulinaryAPI_app.models;
 
+import CulinaryAPI_app.dtos.UserEventDto;
 import CulinaryAPI_app.enums.UserStatus;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import jakarta.persistence.*;
 
+import org.springframework.beans.BeanUtils;
 import org.springframework.hateoas.RepresentationModel;
 
 
@@ -23,7 +25,7 @@ public class UserModel  extends RepresentationModel<UserModel> implements Serial
     @GeneratedValue(strategy = GenerationType.AUTO)
     private UUID userId;
 
-    @Column(nullable = false , unique = true ,length = 20)
+    @Column(nullable = false , unique = true ,length = 30)
     private String username;
 
     @Column(nullable = false , unique = true ,length = 20)
@@ -33,7 +35,7 @@ public class UserModel  extends RepresentationModel<UserModel> implements Serial
     @JsonIgnore
     private String password;
 
-    @Column(nullable = false  ,length = 50)
+    @Column(nullable = false  ,length = 100)
     private String fullName;
 
     @Column(nullable = false)
@@ -42,6 +44,7 @@ public class UserModel  extends RepresentationModel<UserModel> implements Serial
 
     @Column(length = 20)
     private String phoneNumber;
+
 
     public UUID getUserId() {
         return userId;
@@ -144,5 +147,13 @@ public class UserModel  extends RepresentationModel<UserModel> implements Serial
 
     public void setLastUpdateDate(LocalDateTime lastUpdateDate) {
         this.lastUpdateDate = lastUpdateDate;
+    }
+
+    public UserEventDto convertToUserEventDto() {
+        var userEventDto= new UserEventDto();
+        BeanUtils.copyProperties(this, userEventDto);
+        userEventDto.setUserStatus(this.getUserStatus().toString());
+        return userEventDto;
+
     }
 }
