@@ -1,32 +1,26 @@
 package CulinaryAPI_app.services;
 
+import CulinaryAPI_app.dtos.UserDto;
 import CulinaryAPI_app.models.UserModel;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.ResponseEntity;
 
-import java.util.Optional;
 import java.util.UUID;
 
 public interface UserService {
 
-    boolean existsByUsername(String username);
-
-    boolean existsByEmail(String email);
-
-    UserModel save(UserModel userModel);
-
     Page<UserModel> findAll(Pageable pageable);
 
-    Optional<UserModel> findById(UUID userId);
+    ResponseEntity<Object> getOneUser(UUID userId);
 
-    void deleteUser(UserModel userModel);
+    ResponseEntity<Object> deleteUser(UUID userId);
 
-    UserModel updateUser(UserModel userModel);
+    ResponseEntity<Object> updateUser(UUID userId, UserDto userDto);
 
-    void updatePassword(UserModel userModel);
+    ResponseEntity<Object> updatePassword(UUID userId, UserDto userDto);
 
-    void updateImage(UserModel userModel);
+    ResponseEntity<Object> updateImage(UUID userId, UserDto userDto);
 
-    UserModel saveUser(UserModel userModel);
-
+    ResponseEntity<Object> registerUser(UserDto userDto);
 }

@@ -5,7 +5,7 @@ import CulinaryAPI_app.dtos.ErrorResponseDto;
 import CulinaryAPI_app.exception.BadRequestException;
 import CulinaryAPI_app.exception.BusinessException;
 import CulinaryAPI_app.exception.HttpClientException;
-import CulinaryAPI_app.exception.NotFoudException;
+import CulinaryAPI_app.exception.NotFoundException;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -21,8 +21,8 @@ import java.util.Map;
 @RestControllerAdvice
 public class ResourceHandler {
 
-    @ExceptionHandler(NotFoudException.class)
-    public ResponseEntity<ErrorResponseDto> notFoundException(NotFoudException n) {
+    @ExceptionHandler(NotFoundException.class)
+    public ResponseEntity<ErrorResponseDto> notFoundException(NotFoundException n) {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ErrorResponseDto.builder()
                 .message(n.getMessage())
                 .httpStatus(HttpStatus.NOT_FOUND)
