@@ -69,13 +69,14 @@ public class UserServiceImpl implements UserService {
 
     @Transactional
     @Override
-    public ResponseEntity<Object> deleteUser(UUID userId) {
+    public ResponseEntity<Object> deactivateUser(UUID userId) {
         UserModel userModel = userRepository.findById(userId)
                 .orElseThrow(() -> new NotFoundException("User not found: " + userId));
 
-        userEventPublisher.publishUserEvent(userModel.convertToUserEventDto(), ActionType.DELETE);
-        userRepository.delete(userModel);
-        return ResponseEntity.ok("User deleted successfully.");
+        userModel.setUserStatus(UserStatus.BLOCKED);
+        userRepository.save(userModel);
+        userEventPublisher.publishUserEvent(userModel.convertToUserEventDto(), ActionType.UPDATE);
+        return ResponseEntity.ok("User blocked successfully.");
     }
 
     @Transactional

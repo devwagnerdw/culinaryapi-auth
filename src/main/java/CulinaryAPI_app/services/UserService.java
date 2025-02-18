@@ -14,7 +14,7 @@ public interface UserService {
 
     ResponseEntity<Object> getOneUser(UUID userId);
 
-    ResponseEntity<Object> deleteUser(UUID userId);
+    ResponseEntity<Object> deactivateUser(UUID userId);
 
     ResponseEntity<Object> updateUser(UUID userId, UserDto userDto);
 

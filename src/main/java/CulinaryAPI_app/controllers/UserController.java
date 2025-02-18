@@ -35,9 +35,10 @@ public class UserController {
         return userService.getOneUser(userId);
     }
 
-    @DeleteMapping("/{userId}")
-    public ResponseEntity<Object> deleteUser(@PathVariable(value = "userId") UUID userId) {
-        return userService.deleteUser(userId);
+
+    @PutMapping("/{userId}/deactivate")
+    public ResponseEntity<Object> deactivateUser(@PathVariable(value = "userId") UUID userId) {
+        return userService.deactivateUser(userId);
     }
 
     @PutMapping("/{userId}")
