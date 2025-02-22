@@ -3,23 +3,30 @@ package CulinaryAPI_app.services.impl;
 
 import CulinaryAPI_app.dtos.UserDto;
 import CulinaryAPI_app.enums.ActionType;
+import CulinaryAPI_app.enums.RoleType;
 import CulinaryAPI_app.enums.UserStatus;
+import CulinaryAPI_app.enums.UserType;
 import CulinaryAPI_app.exception.BusinessException;
 import CulinaryAPI_app.exception.NotFoundException;
+import CulinaryAPI_app.models.RoleModel;
 import CulinaryAPI_app.models.UserModel;
 import CulinaryAPI_app.publishers.UserEventPublisher;
 import CulinaryAPI_app.repositories.UserRepository;
+import CulinaryAPI_app.services.RoleService;
 import CulinaryAPI_app.services.UserService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.config.authentication.PasswordEncoderParser;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.time.ZoneId;
+import java.util.Optional;
 import java.util.UUID;
 
 
@@ -27,12 +34,16 @@ import java.util.UUID;
 public class UserServiceImpl implements UserService {
 
 
+    private final PasswordEncoder passwordEncoder;
     private final UserEventPublisher userEventPublisher;
     private final UserRepository userRepository;
+    private final RoleService roleService;
 
-    public UserServiceImpl(UserRepository userRepository,UserEventPublisher userEventPublisher) {
+    public UserServiceImpl(PasswordEncoder passwordEncoder, UserRepository userRepository, UserEventPublisher userEventPublisher, RoleService roleService) {
+        this.passwordEncoder = passwordEncoder;
         this.userEventPublisher=userEventPublisher;
         this.userRepository = userRepository;
+        this.roleService = roleService;
     }
 
 
@@ -47,11 +58,19 @@ public class UserServiceImpl implements UserService {
             throw new BusinessException("Error: Email is Already Taken: " + userDto.getEmail());
         }
 
+        RoleModel roleModel = roleService.findByRoleName(RoleType.ROLE_CUSTOMER)
+                .orElseThrow(() -> new RuntimeException("Error: Role is Not Found."));
+
+
+
+        userDto.setPassword(passwordEncoder.encode(userDto.getPassword()));
         var userModel = new UserModel();
         BeanUtils.copyProperties(userDto, userModel);
         userModel.setUserStatus(UserStatus.ACTIVE);
+        userModel.setUserType(UserType.USER);
         userModel.setCreationDate(LocalDateTime.now(ZoneId.of("UTC")));
         userModel.setLastUpdateDate(LocalDateTime.now(ZoneId.of("UTC")));
+        userModel.getRoles().add(roleModel);
 
         userRepository.save(userModel);
 
