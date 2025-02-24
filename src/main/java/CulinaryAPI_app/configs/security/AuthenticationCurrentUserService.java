@@ -1,4 +1,4 @@
-package CulinaryAPI_app.security;
+package CulinaryAPI_app.configs.security;
 
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;

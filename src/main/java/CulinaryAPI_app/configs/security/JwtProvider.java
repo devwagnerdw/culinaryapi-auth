@@ -1,4 +1,4 @@
-package CulinaryAPI_app.security;
+package CulinaryAPI_app.configs.security;
 
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;

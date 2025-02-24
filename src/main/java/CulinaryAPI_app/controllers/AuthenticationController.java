@@ -3,10 +3,12 @@ package CulinaryAPI_app.controllers;
 import CulinaryAPI_app.dtos.JwtDto;
 import CulinaryAPI_app.dtos.LoginDto;
 import CulinaryAPI_app.dtos.UserDto;
-import CulinaryAPI_app.security.JwtProvider;
+import CulinaryAPI_app.configs.security.JwtProvider;
 import CulinaryAPI_app.services.UserService;
 import com.fasterxml.jackson.annotation.JsonView;
 import jakarta.validation.Valid;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -19,11 +21,11 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-
 @RestController
 @RequestMapping("/auth")
 public class AuthenticationController {
 
+    private static final Logger log = LogManager.getLogger(AuthenticationController.class);
 
     private final JwtProvider jwtProvider;
     private final AuthenticationManager authenticationManager;
@@ -38,20 +40,21 @@ public class AuthenticationController {
     @PostMapping("/signup")
     public ResponseEntity<Object> registerUser(@RequestBody @Validated(UserDto.UserView.RegistrationPost.class)
                                                @JsonView(UserDto.UserView.RegistrationPost.class) UserDto userDto) {
+        log.debug("POST registerUser userDto received: {}", userDto);
         return userService.registerUser(userDto);
     }
 
     @PostMapping("/login")
     public ResponseEntity<JwtDto> authenticateUser(@Valid @RequestBody LoginDto loginDto) {
-        try {
+        log.info("POST authenticateUser attempt for username: {}", loginDto.getUsername());
+
             Authentication authentication = authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(loginDto.getUsername(), loginDto.getPassword()));
+
             SecurityContextHolder.getContext().setAuthentication(authentication);
             String jwt = jwtProvider.generateJwt(authentication);
-            return ResponseEntity.ok(new JwtDto(jwt));
-        } catch (AuthenticationException e) {
-            throw e;
-        }
-    }
 
+            log.info("User {} authenticated successfully", loginDto.getUsername());
+            return ResponseEntity.ok(new JwtDto(jwt));
+    }
 }

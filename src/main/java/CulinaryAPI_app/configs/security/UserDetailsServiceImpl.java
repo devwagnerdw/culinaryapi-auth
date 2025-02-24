@@ -1,4 +1,4 @@
-package CulinaryAPI_app.security;
+package CulinaryAPI_app.configs.security;
 
 
 import CulinaryAPI_app.models.UserModel;

@@ -1,4 +1,4 @@
-package CulinaryAPI_app.security;
+package CulinaryAPI_app.configs.security;
 
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
