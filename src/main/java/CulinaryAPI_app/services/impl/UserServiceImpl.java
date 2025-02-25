@@ -62,16 +62,46 @@ public class UserServiceImpl implements UserService {
         }
 
         RoleModel roleModel = roleService.findByRoleName(RoleType.ROLE_CUSTOMER)
-                .orElseThrow(() -> {
-                    LOGGER.error("Role not found: {}", RoleType.ROLE_CUSTOMER);
-                    return new RuntimeException("Error: Role is not found.");
-                });
+                .orElseThrow(() -> new BusinessException("Error: Role is not found."));
 
         userDto.setPassword(passwordEncoder.encode(userDto.getPassword()));
         var userModel = new UserModel();
         BeanUtils.copyProperties(userDto, userModel);
         userModel.setUserStatus(UserStatus.ACTIVE);
         userModel.setUserType(UserType.CUSTOMER);
+        userModel.setCreationDate(LocalDateTime.now(ZoneId.of("UTC")));
+        userModel.setLastUpdateDate(LocalDateTime.now(ZoneId.of("UTC")));
+        userModel.getRoles().add(roleModel);
+
+        userRepository.save(userModel);
+        LOGGER.info("User {} registered successfully.", userDto.getUsername());
+
+        userEventPublisher.publishUserEvent(userModel.convertToUserEventDto(), ActionType.CREATE);
+        return ResponseEntity.status(HttpStatus.CREATED).body(userModel);
+    }
+
+    @Override
+    public ResponseEntity<Object> registerAdmin(UserDto userDto) {
+        LOGGER.info("Starting user registration for username: {}", userDto.getUsername());
+
+        if (userRepository.existsByUsername(userDto.getUsername())) {
+            LOGGER.warn("Username already taken: {}", userDto.getUsername());
+            throw new BusinessException("Error: Username is already taken: " + userDto.getUsername());
+        }
+
+        if (userRepository.existsByEmail(userDto.getEmail())) {
+            LOGGER.warn("Email already taken: {}", userDto.getEmail());
+            throw new BusinessException("Error: Email is already taken: " + userDto.getEmail());
+        }
+
+        RoleModel roleModel = roleService.findByRoleName(RoleType.ROLE_ADMIN)
+                .orElseThrow(() -> new BusinessException("Error: Role is not found."));
+
+        userDto.setPassword(passwordEncoder.encode(userDto.getPassword()));
+        var userModel = new UserModel();
+        BeanUtils.copyProperties(userDto, userModel);
+        userModel.setUserStatus(UserStatus.ACTIVE);
+        userModel.setUserType(UserType.ADMIN);
         userModel.setCreationDate(LocalDateTime.now(ZoneId.of("UTC")));
         userModel.setLastUpdateDate(LocalDateTime.now(ZoneId.of("UTC")));
         userModel.getRoles().add(roleModel);

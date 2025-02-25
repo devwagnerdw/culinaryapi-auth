@@ -23,4 +23,6 @@ public interface UserService {
     ResponseEntity<Object> updateImage(UUID userId, UserDto userDto);
 
     ResponseEntity<Object> registerUser(UserDto userDto);
+
+    ResponseEntity<Object> registerAdmin(UserDto userDto);
 }

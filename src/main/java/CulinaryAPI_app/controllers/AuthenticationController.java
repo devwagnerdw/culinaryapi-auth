@@ -44,6 +44,12 @@ public class AuthenticationController {
         return userService.registerUser(userDto);
     }
 
+    @PostMapping("/signup/admin/usr")
+    public ResponseEntity<Object>registerAdmin(@RequestBody @Validated(UserDto.UserView.RegistrationPost.class)
+                                                       @JsonView(UserDto.UserView.RegistrationPost.class) UserDto userDto){
+        return  userService.registerAdmin(userDto);
+    }
+
     @PostMapping("/login")
     public ResponseEntity<JwtDto> authenticateUser(@Valid @RequestBody LoginDto loginDto) {
         log.info("POST authenticateUser attempt for username: {}", loginDto.getUsername());
