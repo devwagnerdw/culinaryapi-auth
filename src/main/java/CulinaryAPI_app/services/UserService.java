@@ -25,4 +25,6 @@ public interface UserService {
     ResponseEntity<Object> registerUser(UserDto userDto);
 
     ResponseEntity<Object> registerAdmin(UserDto userDto);
+
+    ResponseEntity<Object> registerDelivery(UserDto userDto);
 }

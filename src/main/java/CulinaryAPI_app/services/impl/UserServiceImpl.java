@@ -9,6 +9,7 @@ import CulinaryAPI_app.exception.BusinessException;
 import CulinaryAPI_app.exception.NotFoundException;
 import CulinaryAPI_app.models.RoleModel;
 import CulinaryAPI_app.models.UserModel;
+import CulinaryAPI_app.publishers.DeliverymanEventPublisher;
 import CulinaryAPI_app.publishers.UserEventPublisher;
 import CulinaryAPI_app.repositories.UserRepository;
 import CulinaryAPI_app.services.RoleService;
@@ -35,14 +36,16 @@ public class UserServiceImpl implements UserService {
 
     private final PasswordEncoder passwordEncoder;
     private final UserEventPublisher userEventPublisher;
+    private final DeliverymanEventPublisher deliverymanEventPublisher;
     private final UserRepository userRepository;
     private final RoleService roleService;
 
     public UserServiceImpl(PasswordEncoder passwordEncoder, UserRepository userRepository,
-                           UserEventPublisher userEventPublisher, RoleService roleService) {
+                           UserEventPublisher userEventPublisher, DeliverymanEventPublisher deliverymanEventPublisher, RoleService roleService) {
         this.passwordEncoder = passwordEncoder;
         this.userEventPublisher = userEventPublisher;
         this.userRepository = userRepository;
+        this.deliverymanEventPublisher = deliverymanEventPublisher;
         this.roleService = roleService;
     }
 
@@ -111,6 +114,40 @@ public class UserServiceImpl implements UserService {
 
         userEventPublisher.publishUserEvent(userModel.convertToUserEventDto(), ActionType.CREATE);
         return ResponseEntity.status(HttpStatus.CREATED).body(userModel);
+    }
+
+    @Override
+    public ResponseEntity<Object> registerDelivery(UserDto userDto) {
+        LOGGER.info("Starting user registration for username: {}", userDto.getUsername());
+
+        if (userRepository.existsByUsername(userDto.getUsername())) {
+            LOGGER.warn("Username already taken: {}", userDto.getUsername());
+            throw new BusinessException("Error: Username is already taken: " + userDto.getUsername());
+        }
+
+        if (userRepository.existsByEmail(userDto.getEmail())) {
+            LOGGER.warn("Email already taken: {}", userDto.getEmail());
+            throw new BusinessException("Error: Email is already taken: " + userDto.getEmail());
+        }
+
+        RoleModel roleModel = roleService.findByRoleName(RoleType.ROLE_DELIVERY)
+                .orElseThrow(() -> new BusinessException("Error: Role is not found."));
+
+        userDto.setPassword(passwordEncoder.encode(userDto.getPassword()));
+        var userModel = new UserModel();
+        BeanUtils.copyProperties(userDto, userModel);
+        userModel.setUserStatus(UserStatus.ACTIVE);
+        userModel.setUserType(UserType.DELIVERY);
+        userModel.setCreationDate(LocalDateTime.now(ZoneId.of("UTC")));
+        userModel.setLastUpdateDate(LocalDateTime.now(ZoneId.of("UTC")));
+        userModel.getRoles().add(roleModel);
+
+        userRepository.save(userModel);
+        LOGGER.info("User {} registered successfully.", userDto.getUsername());
+
+        deliverymanEventPublisher.publishDeliverymanEvent(userModel.convertToUserEventDto(),ActionType.CREATE);
+        return ResponseEntity.status(HttpStatus.CREATED).body(userModel);
+
     }
 
     @Override
