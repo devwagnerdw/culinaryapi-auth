@@ -20,6 +20,9 @@ public class RabbitmqConfig {
     @Value(value="${Culinary.broker.exchange.userEvent}")
     private String exchangeUserEvent;
 
+    @Value(value = "${Culinary.broker.exchange.deliverymanEvent}")
+    private String exchangeDeliverymanEvent;
+
     @Bean
     public RabbitTemplate rabbitTemplate(){
         RabbitTemplate template = new RabbitTemplate(cachingConnectionFactory);
@@ -38,4 +41,10 @@ public class RabbitmqConfig {
     public DirectExchange directUserEventExchange() {
         return new DirectExchange(exchangeUserEvent);
     }
+
+    @Bean
+    public DirectExchange directDeliverymanEventExchange() {
+        return new DirectExchange(exchangeDeliverymanEvent);
+    }
+
 }
