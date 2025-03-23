@@ -29,7 +29,7 @@ spring:
 Culinary:
   broker:
     exchange:
-      userEvent: Culinary.userevent
+      userEvent: Culinary.userEvent
       deliverymanEvent: Culinary.deliverymanEvent
 
   auth:
