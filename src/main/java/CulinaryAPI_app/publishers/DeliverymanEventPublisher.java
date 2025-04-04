@@ -15,7 +15,7 @@ public class DeliverymanEventPublisher {
         this.rabbitTemplate = rabbitTemplate;
     }
 
-    @Value(value = "${Culinary.broker.exchange.deliverymanEvent}")
+    @Value(value = "${Culinary.broker.exchange.deliverymanEventExchange}")
     private String exchangeDeliverymanEvent;
 
 

@@ -7,30 +7,26 @@ spring:
   application:
     name: Culinary-authuser-service
   datasource:
-    url:  jdbc:postgresql://localhost:5432/Culinary-authuser
-    username: postgres
-    password: 123
+    url: jdbc:h2:mem:testdb
+    username: sa
+    password:
+    driver-class-name: org.h2.Driver
   jpa:
     hibernate:
       ddl-auto: update
-      dialect: org.hibernate.dialect.PostgreSQLDialect
+      dialect: org.hibernate.dialect.H2Dialect
       jdbc:
         lob.non-contextual-creation: true
     properties:
       hibernate:
         show_sql: true
+  h2:
+    console:
+      enabled: true
+      path: /h2-console
   output:
     ansi:
       enabled: Always
-  rabbitmq:
-      addresses: amqps://gxfhiqck:3sivG1zlLvv3W7SWQcK14y010juFScxm@leopard.lmq.cloudamqp.com/gxfhiqck
-
-
-Culinary:
-  broker:
-    exchange:
-      userEventExchange: Culinary.userEvent
-      deliverymanEventExchange: Culinary.deliverymanEvent
 
   auth:
     jwt-secret: ZHsOVU5Y6gGU3/S9WZfY5W/Ni6ZixK0I9rZ44MudSRuNYvib+ZoeP/YQNfEvXlDhEgV60Ma8csbcv6ALfOjdyMg==

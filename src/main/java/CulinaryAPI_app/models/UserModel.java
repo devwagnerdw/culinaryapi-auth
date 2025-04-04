@@ -179,6 +179,8 @@ public class UserModel  extends RepresentationModel<UserModel> implements Serial
         this.roles = roles;
     }
 
+
+
     public UserEventDto convertToUserEventDto() {
         var userEventDto= new UserEventDto();
         BeanUtils.copyProperties(this, userEventDto);
