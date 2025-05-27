@@ -1,11 +1,11 @@
 server:
   port: 8082
   servlet:
-    context-path: '/Culinary-authuser/'
+    context-path: '/culinary-authuser/'
 
 spring:
   application:
-    name: Culinary-authuser-service
+    name: CulinaryApi-authuser-service
   datasource:
     url:  jdbc:postgresql://localhost:5432/Culinary-authuser
     username: postgres
@@ -35,3 +35,10 @@ Culinary:
   auth:
     jwt-secret: ZHsOVU5Y6gGU3/S9WZfY5W/Ni6ZixK0I9rZ44MudSRuNYvib+ZoeP/YQNfEvXlDhEgV60Ma8csbcv6ALfOjdyMg==
     jwt-expiration-ms: 360000000
+
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: 'http://localhost:8761/eureka'
+  instance:
+    hostname: localhost
