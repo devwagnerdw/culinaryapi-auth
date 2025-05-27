@@ -29,8 +29,8 @@ spring:
 Culinary:
   broker:
     exchange:
-      userEvent: Culinary.userEvent
-      deliverymanEvent: Culinary.deliverymanEvent
+      userEventExchange: Culinary.userEvent
+      deliverymanEventExchange: Culinary.deliverymanEvent
 
   auth:
     jwt-secret: ZHsOVU5Y6gGU3/S9WZfY5W/Ni6ZixK0I9rZ44MudSRuNYvib+ZoeP/YQNfEvXlDhEgV60Ma8csbcv6ALfOjdyMg==

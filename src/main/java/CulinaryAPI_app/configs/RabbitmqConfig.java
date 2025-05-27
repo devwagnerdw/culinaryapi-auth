@@ -17,10 +17,10 @@ public class RabbitmqConfig {
     @Autowired
     CachingConnectionFactory cachingConnectionFactory;
 
-    @Value(value="${Culinary.broker.exchange.userEvent}")
+    @Value(value="${Culinary.broker.exchange.userEventExchange}")
     private String exchangeUserEvent;
 
-    @Value(value = "${Culinary.broker.exchange.deliverymanEvent}")
+    @Value(value = "${Culinary.broker.exchange.deliverymanEventExchange}")
     private String exchangeDeliverymanEvent;
 
     @Bean

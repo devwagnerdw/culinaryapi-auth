@@ -117,7 +117,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public ResponseEntity<Object> registerDelivery(UserDto userDto) {
+    public ResponseEntity<Object> registerDeliveryMan(UserDto userDto) {
         LOGGER.info("Starting user registration for username: {}", userDto.getUsername());
 
         if (userRepository.existsByUsername(userDto.getUsername())) {

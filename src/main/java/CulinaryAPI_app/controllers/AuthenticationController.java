@@ -51,9 +51,9 @@ public class AuthenticationController {
     }
 
     @PostMapping("/signup/delivery")
-    public ResponseEntity<Object>registerDelivery(@RequestBody @Validated(UserDto.UserView.RegistrationPost.class)
+    public ResponseEntity<Object>registerDeliveryMan(@RequestBody @Validated(UserDto.UserView.RegistrationPost.class)
                                                @JsonView(UserDto.UserView.RegistrationPost.class) UserDto userDto){
-        return  userService.registerDelivery(userDto);
+        return  userService.registerDeliveryMan(userDto);
     }
 
 

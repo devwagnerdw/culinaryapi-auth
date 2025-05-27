@@ -17,7 +17,7 @@ public class UserEventPublisher {
     }
 
 
-    @Value(value="${Culinary.broker.exchange.userEvent}" )
+    @Value(value="${Culinary.broker.exchange.userEventExchange}" )
     private String exchangeUserEvent;
 
     public void publishUserEvent(UserEventDto userEventDto, ActionType actionType) {
