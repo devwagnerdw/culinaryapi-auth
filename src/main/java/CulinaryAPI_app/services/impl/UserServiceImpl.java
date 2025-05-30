@@ -110,7 +110,7 @@ public class UserServiceImpl implements UserService {
         userModel.getRoles().add(roleModel);
 
         userRepository.save(userModel);
-        LOGGER.info("User {} registered successfully.", userDto.getUsername());
+        LOGGER.info("Admin {} registered successfully.", userDto.getUsername());
 
         userEventPublisher.publishUserEvent(userModel.convertToUserEventDto(), ActionType.CREATE);
         return ResponseEntity.status(HttpStatus.CREATED).body(userModel);
@@ -143,7 +143,41 @@ public class UserServiceImpl implements UserService {
         userModel.getRoles().add(roleModel);
 
         userRepository.save(userModel);
-        LOGGER.info("User {} registered successfully.", userDto.getUsername());
+        LOGGER.info("DeliveryMan {} registered successfully.", userDto.getUsername());
+
+        deliverymanEventPublisher.publishDeliverymanEvent(userModel.convertToUserEventDto(),ActionType.CREATE);
+        return ResponseEntity.status(HttpStatus.CREATED).body(userModel);
+
+    }
+
+    @Override
+    public ResponseEntity<Object> registerChef(UserDto userDto) {
+        LOGGER.info("Starting user registration for username: {}", userDto.getUsername());
+
+        if (userRepository.existsByUsername(userDto.getUsername())) {
+            LOGGER.warn("Username already taken: {}", userDto.getUsername());
+            throw new BusinessException("Error: Username is already taken: " + userDto.getUsername());
+        }
+
+        if (userRepository.existsByEmail(userDto.getEmail())) {
+            LOGGER.warn("Email already taken: {}", userDto.getEmail());
+            throw new BusinessException("Error: Email is already taken: " + userDto.getEmail());
+        }
+
+        RoleModel roleModel = roleService.findByRoleName(RoleType.ROLE_CHEF)
+                .orElseThrow(() -> new BusinessException("Error: Role is not found."));
+
+        userDto.setPassword(passwordEncoder.encode(userDto.getPassword()));
+        var userModel = new UserModel();
+        BeanUtils.copyProperties(userDto, userModel);
+        userModel.setUserStatus(UserStatus.ACTIVE);
+        userModel.setUserType(UserType.DELIVERY);
+        userModel.setCreationDate(LocalDateTime.now(ZoneId.of("UTC")));
+        userModel.setLastUpdateDate(LocalDateTime.now(ZoneId.of("UTC")));
+        userModel.getRoles().add(roleModel);
+
+        userRepository.save(userModel);
+        LOGGER.info("Chef {} registered successfully.", userDto.getUsername());
 
         deliverymanEventPublisher.publishDeliverymanEvent(userModel.convertToUserEventDto(),ActionType.CREATE);
         return ResponseEntity.status(HttpStatus.CREATED).body(userModel);

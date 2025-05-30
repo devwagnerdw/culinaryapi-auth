@@ -6,6 +6,9 @@ import CulinaryAPI_app.dtos.UserDto;
 import CulinaryAPI_app.configs.security.JwtProvider;
 import CulinaryAPI_app.services.UserService;
 import com.fasterxml.jackson.annotation.JsonView;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import jakarta.validation.Valid;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -37,6 +40,11 @@ public class AuthenticationController {
         this.userService = userService;
     }
 
+    @Operation(summary = "Salvar um usuário", description = "Cria um novo usuário com as informações fornecidas.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "201", description = "usuário criado com sucesso"),
+            @ApiResponse(responseCode = "400", description = "Dados inválidos")
+    })
     @PostMapping("/signup")
     public ResponseEntity<Object> registerUser(@RequestBody @Validated(UserDto.UserView.RegistrationPost.class)
                                                @JsonView(UserDto.UserView.RegistrationPost.class) UserDto userDto) {
@@ -44,20 +52,48 @@ public class AuthenticationController {
         return userService.registerUser(userDto);
     }
 
+    @Operation(summary = "Salvar um Admin", description = "Cria um novo Admin com as informações fornecidas.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "201", description = "Admin criado com sucesso"),
+            @ApiResponse(responseCode = "400", description = "Dados inválidos")
+    })
     @PostMapping("/signup/admin/usr")
     public ResponseEntity<Object>registerAdmin(@RequestBody @Validated(UserDto.UserView.RegistrationPost.class)
                                                        @JsonView(UserDto.UserView.RegistrationPost.class) UserDto userDto){
         return  userService.registerAdmin(userDto);
     }
 
-    @PostMapping("/signup/delivery")
+
+    @Operation(summary = "Salvar um Entregador", description = "Cria um novo Entregador com as informações fornecidas.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "201", description = "Entregador criado com sucesso"),
+            @ApiResponse(responseCode = "400", description = "Dados inválidos")
+    })
+    @PostMapping("/signup/deliveryman")
     public ResponseEntity<Object>registerDeliveryMan(@RequestBody @Validated(UserDto.UserView.RegistrationPost.class)
                                                @JsonView(UserDto.UserView.RegistrationPost.class) UserDto userDto){
         return  userService.registerDeliveryMan(userDto);
     }
 
 
+    @Operation(summary = "Salvar um Chef", description = "Cria um novo Chef com as informações fornecidas.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "201", description = "Chef criado com sucesso"),
+            @ApiResponse(responseCode = "400", description = "Dados inválidos")
+    })
+    @PostMapping("/signup/chef")
+    public ResponseEntity<Object>registerChef(@RequestBody @Validated(UserDto.UserView.RegistrationPost.class)
+                                                     @JsonView(UserDto.UserView.RegistrationPost.class) UserDto userDto){
+        return  userService.registerChef(userDto);
+    }
 
+
+
+    @Operation(summary = "Login de Usuário", description = "Autentica um usuário e gera um token JWT.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Login bem-sucedido, token JWT gerado"),
+            @ApiResponse(responseCode = "401", description = "Credenciais inválidas")
+    })
     @PostMapping("/login")
     public ResponseEntity<JwtDto> authenticateUser(@Valid @RequestBody LoginDto loginDto) {
         log.info("POST authenticateUser attempt for username: {}", loginDto.getUsername());

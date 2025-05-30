@@ -49,19 +49,10 @@ public class UserModel  extends RepresentationModel<UserModel> implements Serial
     @Enumerated(EnumType.STRING)
     private UserType userType;
 
-    @Column(length = 20)
+    @Column(length = 20, unique = true)
     private String phoneNumber;
 
-
-    public UUID getUserId() {
-        return userId;
-    }
-
-    public void setUserId(UUID userId) {
-        this.userId = userId;
-    }
-
-    @Column(length = 20)
+    @Column(length = 20, unique = true)
     private String cpf;
 
     @Column
@@ -81,6 +72,15 @@ public class UserModel  extends RepresentationModel<UserModel> implements Serial
             joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "role_id"))
     private Set<RoleModel> roles = new HashSet<>();
+
+
+    public UUID getUserId() {
+        return userId;
+    }
+
+    public void setUserId(UUID userId) {
+        this.userId = userId;
+    }
 
 
     public String getUsername() {
